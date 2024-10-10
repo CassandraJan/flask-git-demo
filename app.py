@@ -20,6 +20,17 @@ def get_zodiac_sign(dob):
     for m, d, sign in zodiac_signs:
         if (month, day) <= (m, d):
             return sign
+        
+def days_to_birthday(dob):
+    today = date.today()
+    dob = datetime.strptime(dob, "%Y-%m-%d").date()
+    next_birthday = date(today.year, dob.month, dob.day)
+    if next_birthday < today:
+        next_birthday = date(today.year + 1, dob.month, dob.day)
+    return (next_birthday - today).days
+
+def get_lucky_number():
+    return random.randint(1, 100)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -28,6 +39,7 @@ def index():
         dob = request.form['dob']
         age = calculate_age(dob)
         zodiac = get_zodiac_sign(dob)
+        lucky_number = get_lucky_number()
         days_to_bday = days_to_birthday(dob)
         message = f"Greetings, {name}! You're {age} years old with the zodiac sign {zodiac}. Your next birthday is in {days_to_bday} days."
         return render_template('result.html', message=message)
